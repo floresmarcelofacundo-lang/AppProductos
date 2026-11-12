@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentaciones Argentinas - Gestión</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background: #fdf6ed; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background-color: black; } 
+    .navbar-brand { font-weight: 700; color: #db8f43; }
+    .navbar-nav .nav-link { color: #db8f43; }   
+    .btn-primary { background-color: #8B5A2B; border-color: #8B5A2B; }
+    .btn-primary:hover { background-color: #6a4420; border-color: #6a4420; }
+    .card { border-radius: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.1); border: none; }
+    .card-header { background-color: #D4A373; color: white; border-radius: 15px 15px 0 0 !important; }
+    .logo-text { font-family: Georgia, serif; font-size: 1.8rem; font-weight: bold; color: #8B5A2B; }
+    .hidden { display: none; }
+    .product-card { transition: 0.2s; margin-bottom: 1.5rem; }
+    .product-card:hover { transform: scale(1.02); }
+    .table th { background-color: #D4A373; color: white; }
+    .login-container { max-width: 400px; margin: 5rem auto; }
+    .switch-link { cursor: pointer; color: #8B5A2B; font-weight: 500; }
+    .receta-item { background: #f8f9fa; padding: 8px; border-radius: 8px; margin-bottom: 5px; }
+    .precio-por-gramo { font-size: 0.85rem; color: #6c757d; }
+    footer { background-color: #D4A373; color: white; padding: 1rem 0; margin-top: 2rem; text-align: center; }
+    @media (max-width: 576px) { .logo-text { font-size: 1.4rem; } }
+    
+    /* ===== NUEVO ESTILO PARA NAVBAR Y FOOTER (completo) ===== */
+    .navbar {
+        background-color: #000000 !important;
+    }
+
+    /* Todos los textos del navbar en dorado */
+    .navbar .navbar-brand,
+    .navbar .navbar-brand .logo-text,
+    .navbar .navbar-brand .logo-sub,
+    .navbar .nav-link,
+    .navbar .navbar-nav .nav-link,
+    .navbar .navbar-text {
+        color: #FFD700 !important;
+    }
+
+    /* Botón de cerrar sesión */
+    .navbar .btn-outline-primary {
+        color: #FFD700 !important;
+        border-color: #FFD700 !important;
+    }
+    .navbar .btn-outline-primary:hover {
+        background-color: #FFD700 !important;
+        color: #000000 !important;
+    }
+
+    /* Footer */
+    footer {
+        background-color: #000000 !important;
+        color: #FFD700 !important;
+    }
+    footer span {
+        color: #FFD700 !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-black shadow-sm">
+  <div class="container">
+    <img src="img/dorado fondo negro.png" alt="Logo" width="100" height="100" class="d-inline-block align-text-top">
+    <a class="navbar-brand" href="#"><span class="logo-text"> Tentaciones</span> <span class="logo-sub">Argentinas</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto" id="navLinks">
+        <li class="nav-item"><a class="nav-link" href="#" data-section="productos">Productos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="unidades">Unidades</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="recetas">Recetas</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="insumos">Insumos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="clientes">Clientes</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="ventas">Ventas</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="listado-ventas">Listado Ventas</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-outline-primary btn-sm ms-2" href="#" id="btnLogout">Cerrar Sesión</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<div class="container mt-4" id="mainApp">
+
+  <!-- LOGIN -->
+  <div id="loginSection" class="login-container">
+    <div class="card">
+      <div class="card-header text-center">Acceso al Sistema</div>
+      <div class="card-body">
+        <div id="loginForm">
+          <div class="mb-3"><label class="form-label">Usuario</label><input type="text" id="loginUser" class="form-control" value="admin"></div>
+          <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" id="loginPass" class="form-control" value="1234"></div>
+          <button class="btn btn-primary w-100" id="btnLogin">Iniciar Sesión</button>
+          <div class="mt-3 text-center"><span class="switch-link" id="goToRegister">¿No tienes cuenta? Regístrate</span></div>
+          <div id="loginError" class="text-danger mt-2 text-center"></div>
+        </div>
+        <div id="registerForm" class="hidden">
+          <div class="mb-3"><label class="form-label">Nuevo Usuario</label><input type="text" id="regUser" class="form-control"></div>
+          <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" id="regPass" class="form-control"></div>
+          <button class="btn btn-primary w-100" id="btnRegister">Registrarse</button>
+          <div class="mt-3 text-center"><span class="switch-link" id="goToLogin">Ya tengo cuenta</span></div>
+          <div id="registerError" class="text-danger mt-2 text-center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL PRINCIPAL -->
+  <div id="panelSection" class="hidden">
+
+    <!-- Sección Productos -->
+    <div id="productosSection">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <h2><i class="fas fa-box"></i> Productos</h2>
+        <button class="btn btn-primary" id="btnAgregarProducto"><i class="fas fa-plus"></i> Nuevo Producto</button>
+      </div>
+      <div id="productosList" class="row"></div>
+    </div>
+
+    <!-- Sección Recetas -->
+    <div id="recetasSection" class="hidden">
+      <h2><i class="fas fa-utensils"></i> Recetas por Producto</h2>
+      <p>Selecciona un producto para ver y editar su receta e instrucciones.</p>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">Productos</div>
+            <div class="card-body">
+              <ul id="listaProductosReceta" class="list-group"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div id="detalleReceta" class="card">
+            <div class="card-header">Receta</div>
+            <div class="card-body">
+              <div id="recetaContenido">
+                <p class="text-muted">Selecciona un producto para ver su receta.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Insumos -->
+    <div id="insumosSection" class="hidden">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-cubes"></i> Insumos (Materia Prima)</h2>
+        <button class="btn btn-primary" id="btnAgregarInsumo"><i class="fas fa-plus"></i> Nuevo Insumo</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Precio Compra (€)</th><th>Peso (gr)</th><th>€/gr</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaInsumos"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sección Clientes -->
+    <div id="clientesSection" class="hidden">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-users"></i> Clientes</h2>
+        <button class="btn btn-primary" id="btnAgregarCliente"><i class="fas fa-plus"></i> Nuevo Cliente</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Dirección</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaClientes"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sección Ventas (Crear) -->
+    <div id="ventasSection" class="hidden">
+      <h2><i class="fas fa-shopping-cart"></i> Nueva Venta</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">Datos de la Venta</div>
+            <div class="card-body">
+              <div class="mb-3"><label class="form-label">Cliente</label><select id="selectCliente" class="form-select"></select></div>
+              <div class="mb-3"><label class="form-label">Producto</label><select id="selectVentaProducto" class="form-select"></select></div>
+              <div class="mb-3"><label class="form-label">Cantidad</label><input type="number" id="ventaCantidad" class="form-control" value="1" min="1"></div>
+              <div class="mb-3"><label class="form-label">Tipo de precio</label><select id="ventaTipoPrecio" class="form-select"><option value="unitario">Unitario</option><option value="docena">Docena (si existe)</option></select></div>
+              <button class="btn btn-primary" id="btnAgregarCarrito"><i class="fas fa-plus"></i> Agregar al Carrito</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">Carrito</div>
+            <div class="card-body">
+              <ul id="carritoList" class="list-group mb-3"></ul>
+              <h5>Total: €<span id="carritoTotal">0.00</span></h5>
+              <button class="btn btn-success" id="btnFinalizarVenta"><i class="fas fa-check"></i> Finalizar Venta</button>
+              <button class="btn btn-danger" id="btnVaciarCarrito"><i class="fas fa-trash"></i> Vaciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Listado de Ventas con filtros -->
+    <div id="listadoVentasSection" class="hidden">
+      <h2><i class="fas fa-list"></i> Listado de Ventas</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-3"><label>Producto</label><select id="filtroProducto" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-3"><label>Cliente</label><select id="filtroCliente" class="form-select"><option value="">Todos</option></select></div>
+        <div class="col-md-3"><label>Fecha desde</label><input type="date" id="filtroFechaDesde" class="form-control"></div>
+        <div class="col-md-3"><label>Fecha hasta</label><input type="date" id="filtroFechaHasta" class="form-control"></div>
+        <div class="col-md-12">
+          <button class="btn btn-primary" id="btnFiltrarVentas"><i class="fas fa-search"></i> Filtrar</button>
+          <button class="btn btn-secondary" id="btnLimpiarFiltros">Limpiar</button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Detalles</th></tr></thead>
+          <tbody id="tablaVentas"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Sección Unidades de Medida -->
+    <div id="unidadesSection" class="hidden">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-ruler"></i> Unidades de Medida</h2>
+        <button class="btn btn-primary" id="btnAgregarUnidad"><i class="fas fa-plus"></i> Nueva Unidad</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Abreviatura</th>
+              <th>Conversión a gr</th>
+              <th>Conversión a ml</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaUnidades"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer><span> Tentaciones Argentinas - Barras Móviles y Catering</span></footer>
+
+<!-- MODALES -->
+
+<!-- Producto Modal (con unidad de medida) -->
+<div class="modal fade" id="productoModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="modalProductoTitle">Producto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="editProductoId">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3"><label class="form-label">Nombre</label><input type="text" id="prodNombre" class="form-control"></div>
+            <div class="mb-3"><label class="form-label">Precio Unitario (€)</label><input type="number" id="prodPrecioUnitario" class="form-control" step="0.01"></div>
+            <div class="mb-3"><label class="form-label">Precio Docena (€)</label><input type="number" id="prodPrecioDocena" class="form-control" step="0.01"></div>
+            <div class="mb-3"><label class="form-label">Costo (€) <small>(estimado)</small></label><input type="number" id="prodCosto" class="form-control" step="0.01"></div>
+            <div class="mb-3"><label class="form-label">Pesaje (gr)</label><input type="number" id="prodPesaje" class="form-control" step="1"></div>
+            <div class="mb-3"><label class="form-label">Unidad de medida</label>
+              <select id="prodUnidadMedida" class="form-select"></select>
+            </div>
+            <div class="mb-3"><label class="form-label">Cantidad producida por lote</label><input type="number" id="prodCantidadProducida" class="form-control" step="1" min="1" value="1"></div>
+            <div class="mb-3"><label class="form-label">Instrucciones (preparación)</label><textarea id="prodInstrucciones" class="form-control" rows="3"></textarea></div>
+          </div>
+          <div class="col-md-6">
+            <h6>Receta (insumos)</h6>
+            <div id="recetaContainer"></div>
+            <button class="btn btn-sm btn-outline-primary" id="btnAgregarInsumoReceta"><i class="fas fa-plus"></i> Agregar Insumo</button>
+            <hr>
+            <div class="mt-2"><strong>Costo total de la receta:</strong> €<span id="costoRecetaTotal">0.00</span></div>
+            <div class="mt-1"><strong>Costo unitario (por lote):</strong> €<span id="costoRecetaEstimado">0.00</span></div>
+            <small class="text-muted">Se divide el costo total entre la cantidad producida.</small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarProducto">Guardar Producto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Insumo Modal -->
+<div class="modal fade" id="insumoModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Insumo</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="editInsumoId">
+        <div class="mb-3"><label class="form-label">Nombre</label><input type="text" id="insNombre" class="form-control"></div>
+        <div class="mb-3"><label class="form-label">Precio de Compra (€)</label><input type="number" id="insPrecioCompra" class="form-control" step="0.01"></div>
+        <div class="mb-3"><label class="form-label">Peso (gramos)</label><input type="number" id="insPeso" class="form-control" step="1"></div>
+        <div class="mb-3">
+          <label class="form-label">Unidad de medida</label>
+          <select id="insUnidadMedida" class="form-select"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarInsumo">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cliente Modal -->
+<div class="modal fade" id="clienteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="editClienteId">
+        <div class="mb-3"><label class="form-label">Nombre</label><input type="text" id="cliNombre" class="form-control"></div>
+        <div class="mb-3"><label class="form-label">Email</label><input type="email" id="cliEmail" class="form-control"></div>
+        <div class="mb-3"><label class="form-label">Teléfono</label><input type="text" id="cliTelefono" class="form-control"></div>
+        <div class="mb-3"><label class="form-label">Dirección</label><input type="text" id="cliDireccion" class="form-control"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarCliente">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar insumo a receta -->
+<div class="modal fade" id="recetaInsumoModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Agregar Insumo a Receta</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="recetaProductoId">
+        <div class="mb-3">
+          <label class="form-label">Insumo</label>
+          <select id="recetaInsumoSelect" class="form-select"></select>
+          <small><a href="#" id="recetaNuevoInsumoLink">+ Nuevo insumo</a></small>
+        </div>
+        <div class="mb-3"><label class="form-label">Cantidad</label><input type="number" id="recetaCantidad" class="form-control" step="0.001"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarRecetaInsumo">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar instrucciones -->
+<div class="modal fade" id="recetaInstruccionesModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Instrucciones de preparación</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="editInstruccionesProductoId">
+        <div class="mb-3"><label class="form-label">Instrucciones</label><textarea id="editInstruccionesTexto" class="form-control" rows="4"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarInstrucciones">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Unidad de Medida -->
+<div class="modal fade" id="unidadModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalUnidadTitle">Unidad de Medida</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editUnidadId">
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input type="text" id="uniNombre" class="form-control" placeholder="Ej: Kilogramo">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Abreviatura</label>
+          <input type="text" id="uniAbreviatura" class="form-control" placeholder="Ej: kg">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Conversión a gramos (factor multiplicador)</label>
+          <input type="number" id="uniConversionGr" class="form-control" step="0.001" placeholder="Ej: 1000">
+          <small class="text-muted">Dejar vacío si no aplica (para unidades no gravimétricas).</small>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Conversión a mililitros (factor multiplicador)</label>
+          <input type="number" id="uniConversionMl" class="form-control" step="0.001" placeholder="Ej: 1000">
+          <small class="text-muted">Dejar vacío si no aplica (para unidades no volumétricas).</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarUnidad">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ========== FUNCIÓN SEGURA PARA FORMATEAR NÚMEROS ==========
+function fmt(val, decimals = 2) {
+  if (val === null || val === undefined || isNaN(val)) return '0.00';
+  return Number(val).toFixed(decimals);
+}
+
+// ========== CONFIGURACIÓN API ==========
+const API_URL = 'http://localhost:5000/api';
+
+// ========== VARIABLES GLOBALES ==========
+let productos = [];
+let insumos = [];
+let clientes = [];
+let unidades = [];
+let recetas = {};
+let carrito = [];
+let currentUser = null;
+
+// ========== FUNCIONES DE AYUDA ==========
+function getHeaders() {
+  return { 'Content-Type': 'application/json' };
+}
+
+async function fetchApi(endpoint, options = {}) {
+  const url = `${API_URL}${endpoint}`;
+  const resp = await fetch(url, { ...options, headers: getHeaders() });
+  if (!resp.ok) {
+    const error = await resp.json();
+    throw new Error(error.error || 'Error en la petición');
+  }
+  return resp.json();
+}
+
+// ========== LOGIN / REGISTRO ==========
+async function login() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value.trim();
+  if (!user || !pass) { document.getElementById('loginError').textContent = 'Ingresa usuario y contraseña'; return; }
+  try {
+    const data = await fetchApi('/login', { method: 'POST', body: JSON.stringify({ username: user, password: pass }) });
+    if (data.success) {
+      currentUser = user;
+      document.getElementById('loginError').textContent = '';
+      mostrarPanel(true);
+      cargarDatosIniciales();
+    } else {
+      document.getElementById('loginError').textContent = 'Credenciales incorrectas';
+    }
+  } catch (e) {
+    document.getElementById('loginError').textContent = 'Error de conexión con el servidor';
+  }
+}
+
+async function register() {
+  const user = document.getElementById('regUser').value.trim();
+  const pass = document.getElementById('regPass').value.trim();
+  if (!user || !pass) { document.getElementById('registerError').textContent = 'Completa todos los campos'; return; }
+  try {
+    await fetchApi('/register', { method: 'POST', body: JSON.stringify({ username: user, password: pass }) });
+    document.getElementById('registerError').textContent = 'Registro exitoso. Inicia sesión.';
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginUser').value = user;
+    document.getElementById('loginPass').value = '';
+  } catch (e) {
+    document.getElementById('registerError').textContent = 'Error al registrar';
+  }
+}
+
+function logout() {
+  currentUser = null;
+  carrito = [];
+  mostrarPanel(false);
+  document.getElementById('loginForm').classList.remove('hidden');
+  document.getElementById('registerForm').classList.add('hidden');
+}
+
+function mostrarPanel(show) {
+  document.getElementById('loginSection').classList.toggle('hidden', show);
+  document.getElementById('panelSection').classList.toggle('hidden', !show);
+  if (show) {
+    mostrarSeccion('productos');
+  }
+}
+
+function mostrarSeccion(seccion) {
+  document.querySelectorAll('#productosSection, #recetasSection, #insumosSection, #clientesSection, #ventasSection, #listadoVentasSection, #unidadesSection')
+    .forEach(el => el.classList.add('hidden'));
+  if (seccion === 'productos') document.getElementById('productosSection').classList.remove('hidden');
+  else if (seccion === 'recetas') document.getElementById('recetasSection').classList.remove('hidden');
+  else if (seccion === 'insumos') document.getElementById('insumosSection').classList.remove('hidden');
+  else if (seccion === 'clientes') document.getElementById('clientesSection').classList.remove('hidden');
+  else if (seccion === 'ventas') document.getElementById('ventasSection').classList.remove('hidden');
+  else if (seccion === 'listado-ventas') document.getElementById('listadoVentasSection').classList.remove('hidden');
+  else if (seccion === 'unidades') {
+    document.getElementById('unidadesSection').classList.remove('hidden');
+    renderUnidades();
+  }
+}
+
+// ========== CARGA INICIAL ==========
+async function cargarDatosIniciales() {
+  try {
+    productos = await fetchApi('/productos');
+    insumos = await fetchApi('/insumos');
+    clientes = await fetchApi('/clientes');
+    unidades = await fetchApi('/unidades');
+    renderProductos();
+    renderInsumos();
+    renderClientes();
+    renderSelectClientes();
+    renderSelectProductosVenta();
+    renderFiltros();
+    renderListaProductosReceta();
+    renderSelectUnidades();
+    renderSelectUnidadesInsumo();
+  } catch (e) {
+    alert('Error al cargar datos: ' + e.message);
+  }
+}
+
+// ========== PRODUCTOS ==========
+function renderProductos() {
+  const container = document.getElementById('productosList');
+  if (productos.length === 0) {
+    container.innerHTML = `<div class="col-12"><div class="alert alert-info">No hay productos</div></div>`;
+    return;
+  }
+  let html = '';
+  productos.forEach(p => {
+    const docenaStr = p.precio_docena ? '€ ' + fmt(p.precio_docena, 2) : 'N/A';
+    const prodCantidad = p.cantidad_producida || 1;
+    const unidadAbrev = p.unidad_abreviatura || 'ud';
+    html += `
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card product-card">
+          <div class="card-body">
+            <h5 class="card-title">${p.nombre}</h5>
+            <p class="card-text">
+              <strong>Unitario:</strong> € ${fmt(p.precio_unitario, 2)} / ${unidadAbrev}<br>
+              <span class="precio-docena"><strong>Docena:</strong> ${docenaStr}</span><br>
+              <small>Pesaje: ${p.pesaje || 'N/A'} gr</small><br>
+              <small>Cantidad por lote: ${prodCantidad} und.</small>
+            </p>
+            <button class="btn btn-sm btn-outline-primary editar-producto" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-sm btn-outline-danger eliminar-producto" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+  document.querySelectorAll('.editar-producto').forEach(btn => btn.addEventListener('click', () => abrirEditarProducto(parseInt(btn.dataset.id))));
+  document.querySelectorAll('.eliminar-producto').forEach(btn => btn.addEventListener('click', async () => {
+    if (confirm('¿Eliminar este producto?')) {
+      await fetchApi(`/productos/${btn.dataset.id}`, { method: 'DELETE' });
+      await cargarDatosIniciales();
+    }
+  }));
+}
+
+function abrirEditarProducto(id) {
+  const p = productos.find(prod => prod.id === id);
+  if (!p) return;
+  document.getElementById('editProductoId').value = id;
+  document.getElementById('prodNombre').value = p.nombre;
+  document.getElementById('prodPrecioUnitario').value = p.precio_unitario;
+  document.getElementById('prodPrecioDocena').value = p.precio_docena || '';
+  document.getElementById('prodCosto').value = p.costo || '';
+  document.getElementById('prodPesaje').value = p.pesaje || '';
+  document.getElementById('prodCantidadProducida').value = p.cantidad_producida || 1;
+  document.getElementById('prodInstrucciones').value = p.instrucciones || '';
+  // Seleccionar unidad
+  const unidadSelect = document.getElementById('prodUnidadMedida');
+  unidadSelect.value = p.unidad_medida_id || 5;
+  document.getElementById('modalProductoTitle').textContent = 'Editar Producto';
+  cargarRecetasProducto(id);
+  new bootstrap.Modal(document.getElementById('productoModal')).show();
+}
+
+function renderSelectUnidades() {
+  const select = document.getElementById('prodUnidadMedida');
+  select.innerHTML = '';
+  unidades.forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.id;
+    opt.textContent = `${u.nombre} (${u.abreviatura})`;
+    select.appendChild(opt);
+  });
+}
+function renderSelectUnidadesInsumo() {
+    const select = document.getElementById('insUnidadMedida');
+    select.innerHTML = '';
+    unidades.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = `${u.nombre} (${u.abreviatura})`;
+        select.appendChild(opt);
+    });
+}
+
+async function cargarRecetasProducto(productoId) {
+  try {
+    const data = await fetchApi(`/recetas/${productoId}`);
+    recetas[productoId] = data;
+    renderRecetasProducto(productoId);
+  } catch (e) {
+    alert('Error al cargar recetas: ' + e.message);
+  }
+}
+
+function renderRecetasProducto(productoId) {
+  const container = document.getElementById('recetaContainer');
+  const recetasList = recetas[productoId] || [];
+  if (recetasList.length === 0) {
+    container.innerHTML = '<p class="text-muted">Sin insumos registrados</p>';
+  } else {
+    let html = '';
+    recetasList.forEach(r => {
+      const costo = r.cantidad * r.precio_por_gramo;
+      html += `<div class="receta-item d-flex justify-content-between align-items-center">
+                <span>${r.insumo_nombre}: ${r.cantidad} gr (€${fmt(costo, 4)})</span>
+                <div>
+                  <button class="btn btn-sm btn-outline-danger eliminar-receta" data-id="${r.id}"><i class="fas fa-times"></i></button>
+                </div>
+              </div>`;
+    });
+    container.innerHTML = html;
+    document.querySelectorAll('.eliminar-receta').forEach(btn => btn.addEventListener('click', async () => {
+      if (confirm('Eliminar este insumo de la receta?')) {
+        await fetchApi(`/recetas/${btn.dataset.id}`, { method: 'DELETE' });
+        cargarRecetasProducto(productoId);
+      }
+    }));
+  }
+  calcularCostoReceta(productoId);
+}
+
+function calcularCostoReceta(productoId) {
+  const recetasList = recetas[productoId] || [];
+  let total = 0;
+  recetasList.forEach(r => {
+    total += r.cantidad * r.precio_por_gramo;
+  });
+  document.getElementById('costoRecetaTotal').textContent = fmt(total, 2);
+  const cantidadProducida = parseInt(document.getElementById('prodCantidadProducida').value) || 1;
+  const unitario = total / cantidadProducida;
+  document.getElementById('costoRecetaEstimado').textContent = fmt(unitario, 2);
+}
+
+document.getElementById('prodCantidadProducida').addEventListener('input', function() {
+  const productoId = parseInt(document.getElementById('editProductoId').value);
+  if (productoId) {
+    calcularCostoReceta(productoId);
+  }
+});
+
+async function guardarProducto() {
+  const id = document.getElementById('editProductoId').value;
+  const nombre = document.getElementById('prodNombre').value.trim();
+  const precio_unitario = parseFloat(document.getElementById('prodPrecioUnitario').value);
+  const precio_docena = parseFloat(document.getElementById('prodPrecioDocena').value) || null;
+  const costo = parseFloat(document.getElementById('prodCosto').value) || null;
+  const pesaje = parseInt(document.getElementById('prodPesaje').value) || null;
+  const cantidad_producida = parseInt(document.getElementById('prodCantidadProducida').value) || 1;
+  const instrucciones = document.getElementById('prodInstrucciones').value.trim() || null;
+  const unidad_medida_id = parseInt(document.getElementById('prodUnidadMedida').value) || 5;
+
+  if (!nombre || isNaN(precio_unitario) || precio_unitario <= 0) {
+    alert('Nombre y precio unitario son obligatorios');
+    return;
+  }
+
+  const body = { nombre, precio_unitario, precio_docena, costo, pesaje, cantidad_producida, instrucciones, unidad_medida_id };
+  try {
+    if (id) {
+      await fetchApi(`/productos/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    } else {
+      await fetchApi('/productos', { method: 'POST', body: JSON.stringify(body) });
+    }
+    bootstrap.Modal.getInstance(document.getElementById('productoModal')).hide();
+    await cargarDatosIniciales();
+  } catch (e) {
+    alert('Error al guardar producto: ' + e.message);
+  }
+}
+
+// ========== INSUMOS ==========
+function renderInsumos() {
+  const tbody = document.getElementById('tablaInsumos');
+  if (insumos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay insumos</td></tr>';
+    return;
+  }
+  let html = '';
+  insumos.forEach(i => {
+    html += `<tr>
+      <td>${i.id}</td>
+      <td>${i.nombre}</td>
+      <td>€ ${fmt(i.precio_compra, 2)}</td>
+      <td>${i.peso_compra} ${i.unidad_abreviatura || 'gr'}</td>
+      <td>€ ${fmt(i.precio_por_gramo, 6)}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary editar-insumo" data-id="${i.id}"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-sm btn-outline-danger eliminar-insumo" data-id="${i.id}"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+  document.querySelectorAll('.editar-insumo').forEach(btn => btn.addEventListener('click', () => abrirEditarInsumo(parseInt(btn.dataset.id))));
+  document.querySelectorAll('.eliminar-insumo').forEach(btn => btn.addEventListener('click', async () => {
+    if (confirm('¿Eliminar insumo?')) {
+      await fetchApi(`/insumos/${btn.dataset.id}`, { method: 'DELETE' });
+      await cargarDatosIniciales();
+    }
+  }));
+}
+
+function abrirEditarInsumo(id) {
+  const i = insumos.find(ins => ins.id === id);
+  const unidadSelect = document.getElementById('insUnidadMedida');
+  unidadSelect.value = i.unidad_medida_id || 5;
+  if (!i) return;
+  document.getElementById('editInsumoId').value = id;
+  document.getElementById('insNombre').value = i.nombre;
+  document.getElementById('insPrecioCompra').value = i.precio_compra;
+  document.getElementById('insPeso').value = i.peso_compra;
+  new bootstrap.Modal(document.getElementById('insumoModal')).show();
+}
+
+async function guardarInsumo() {
+  const id = document.getElementById('editInsumoId').value;
+  const nombre = document.getElementById('insNombre').value.trim();
+  const precio_compra = parseFloat(document.getElementById('insPrecioCompra').value);
+  const peso_compra = parseFloat(document.getElementById('insPeso').value);
+  const unidad_medida_id = parseInt(document.getElementById('insUnidadMedida').value) || 5;
+  if (!nombre || isNaN(precio_compra) || precio_compra <= 0 || isNaN(peso_compra) || peso_compra <= 0) {
+    alert('Todos los campos son obligatorios y deben ser positivos');
+    return;
+  }
+  const body = { nombre, precio_compra, peso_compra, unidad_medida_id };
+  try {
+    if (id) {
+      await fetchApi(`/insumos/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    } else {
+      await fetchApi('/insumos', { method: 'POST', body: JSON.stringify(body) });
+    }
+    bootstrap.Modal.getInstance(document.getElementById('insumoModal')).hide();
+    await cargarDatosIniciales();
+  } catch (e) {
+    alert('Error al guardar insumo: ' + e.message);
+  }
+}
+
+// ========== RECETAS (sección independiente) ==========
+function renderListaProductosReceta() {
+  const ul = document.getElementById('listaProductosReceta');
+  ul.innerHTML = '';
+  productos.forEach(p => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item list-group-item-action';
+    li.textContent = p.nombre;
+    li.dataset.id = p.id;
+    li.addEventListener('click', () => mostrarDetalleReceta(p.id));
+    ul.appendChild(li);
+  });
+}
+
+async function mostrarDetalleReceta(productoId) {
+  const container = document.getElementById('recetaContenido');
+  const producto = productos.find(p => p.id === productoId);
+  if (!producto) return;
+  let recetasData = [];
+  try {
+    recetasData = await fetchApi(`/recetas/${productoId}`);
+  } catch (e) {
+    recetasData = [];
+  }
+  let costoTotal = 0;
+  recetasData.forEach(r => {
+    costoTotal += r.cantidad * r.precio_por_gramo;
+  });
+  const cantidadProducida = producto.cantidad_producida || 1;
+  const costoUnitario = costoTotal / cantidadProducida;
+
+  let html = `
+    <h5>${producto.nombre}</h5>
+    <div class="mb-2"><strong>Instrucciones:</strong> 
+      <span id="instruccionesDisplay">${producto.instrucciones || 'No definidas'}</span>
+      <button class="btn btn-sm btn-outline-secondary ms-2" id="btnEditarInstrucciones" data-id="${productoId}"><i class="fas fa-edit"></i></button>
+    </div>
+    <div><strong>Cantidad producida por lote:</strong> ${cantidadProducida} und.</div>
+    <div><strong>Costo total de receta:</strong> € ${fmt(costoTotal, 2)}</div>
+    <div><strong>Costo unitario:</strong> € ${fmt(costoUnitario, 2)}</div>
+    <hr>
+    <h6>Ingredientes (insumos):</h6>
+    <ul class="list-group">
+  `;
+  if (recetasData.length === 0) {
+    html += '<li class="list-group-item">No hay insumos registrados para este producto.</li>';
+  } else {
+    recetasData.forEach(r => {
+      const costo = r.cantidad * r.precio_por_gramo;
+      html += `<li class="list-group-item d-flex justify-content-between">
+                <span>${r.insumo_nombre}</span>
+                <span>${r.cantidad} gr (€ ${fmt(costo, 4)})</span>
+              </li>`;
+    });
+  }
+  html += '</ul>';
+  container.innerHTML = html;
+  document.getElementById('btnEditarInstrucciones').addEventListener('click', () => {
+    document.getElementById('editInstruccionesProductoId').value = productoId;
+    document.getElementById('editInstruccionesTexto').value = producto.instrucciones || '';
+    new bootstrap.Modal(document.getElementById('recetaInstruccionesModal')).show();
+  });
+}
+
+document.getElementById('btnGuardarInstrucciones').addEventListener('click', async () => {
+  const productoId = parseInt(document.getElementById('editInstruccionesProductoId').value);
+  const texto = document.getElementById('editInstruccionesTexto').value.trim();
+  const producto = productos.find(p => p.id === productoId);
+  if (!producto) return;
+  try {
+    await fetchApi(`/productos/${productoId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        nombre: producto.nombre,
+        precio_unitario: producto.precio_unitario,
+        precio_docena: producto.precio_docena,
+        costo: producto.costo,
+        pesaje: producto.pesaje,
+        cantidad_producida: producto.cantidad_producida,
+        instrucciones: texto,
+        unidad_medida_id: producto.unidad_medida_id
+      })
+    });
+    bootstrap.Modal.getInstance(document.getElementById('recetaInstruccionesModal')).hide();
+    await cargarDatosIniciales();
+    mostrarDetalleReceta(productoId);
+  } catch (e) {
+    alert('Error al guardar instrucciones: ' + e.message);
+  }
+});
+
+// ========== CLIENTES ==========
+function renderClientes() {
+  const tbody = document.getElementById('tablaClientes');
+  if (clientes.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay clientes</td></tr>';
+    return;
+  }
+  let html = '';
+  clientes.forEach(c => {
+    html += `<tr>
+      <td>${c.id}</td>
+      <td>${c.nombre}</td>
+      <td>${c.email || ''}</td>
+      <td>${c.telefono || ''}</td>
+      <td>${c.direccion || ''}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary editar-cliente" data-id="${c.id}"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-sm btn-outline-danger eliminar-cliente" data-id="${c.id}"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+  document.querySelectorAll('.editar-cliente').forEach(btn => btn.addEventListener('click', () => abrirEditarCliente(parseInt(btn.dataset.id))));
+  document.querySelectorAll('.eliminar-cliente').forEach(btn => btn.addEventListener('click', async () => {
+    if (confirm('¿Eliminar cliente?')) {
+      await fetchApi(`/clientes/${btn.dataset.id}`, { method: 'DELETE' });
+      await cargarDatosIniciales();
+    }
+  }));
+}
+
+function abrirEditarCliente(id) {
+  const c = clientes.find(cli => cli.id === id);
+  if (!c) return;
+  document.getElementById('editClienteId').value = id;
+  document.getElementById('cliNombre').value = c.nombre;
+  document.getElementById('cliEmail').value = c.email || '';
+  document.getElementById('cliTelefono').value = c.telefono || '';
+  document.getElementById('cliDireccion').value = c.direccion || '';
+  new bootstrap.Modal(document.getElementById('clienteModal')).show();
+}
+
+async function guardarCliente() {
+  const id = document.getElementById('editClienteId').value;
+  const nombre = document.getElementById('cliNombre').value.trim();
+  const email = document.getElementById('cliEmail').value.trim() || null;
+  const telefono = document.getElementById('cliTelefono').value.trim() || null;
+  const direccion = document.getElementById('cliDireccion').value.trim() || null;
+  if (!nombre) { alert('El nombre es obligatorio'); return; }
+  const body = { nombre, email, telefono, direccion };
+  try {
+    if (id) {
+      await fetchApi(`/clientes/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    } else {
+      await fetchApi('/clientes', { method: 'POST', body: JSON.stringify(body) });
+    }
+    bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide();
+    await cargarDatosIniciales();
+  } catch (e) {
+    alert('Error al guardar cliente: ' + e.message);
+  }
+}
+
+function renderSelectClientes() {
+  const select = document.getElementById('selectCliente');
+  select.innerHTML = '';
+  clientes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.nombre;
+    select.appendChild(opt);
+  });
+}
+
+// ========== VENTAS (CARRITO) ==========
+function renderSelectProductosVenta() {
+  const select = document.getElementById('selectVentaProducto');
+  select.innerHTML = '';
+  productos.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.nombre + ' (€' + fmt(p.precio_unitario, 2) + '/' + (p.unidad_abreviatura || 'ud') + ')';
+    select.appendChild(opt);
+  });
+}
+
+function agregarAlCarrito() {
+  const productoId = parseInt(document.getElementById('selectVentaProducto').value);
+  const cantidad = parseInt(document.getElementById('ventaCantidad').value) || 1;
+  const tipoPrecio = document.getElementById('ventaTipoPrecio').value;
+  const producto = productos.find(p => p.id === productoId);
+  if (!producto) return;
+  let precioUnitario = producto.precio_unitario;
+  if (tipoPrecio === 'docena' && producto.precio_docena) {
+    precioUnitario = producto.precio_docena / 12;
+  }
+  carrito.push({
+    producto_id: producto.id,
+    nombre: producto.nombre,
+    cantidad,
+    precio_unitario: precioUnitario,
+    tipo_precio: tipoPrecio
+  });
+  renderCarrito();
+}
+
+function renderCarrito() {
+  const list = document.getElementById('carritoList');
+  if (carrito.length === 0) {
+    list.innerHTML = '<li class="list-group-item text-muted">Carrito vacío</li>';
+    document.getElementById('carritoTotal').textContent = '0.00';
+    return;
+  }
+  let html = '';
+  let total = 0;
+  carrito.forEach((item, idx) => {
+    const subtotal = item.cantidad * item.precio_unitario;
+    total += subtotal;
+    html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+      ${item.nombre} x ${item.cantidad} (${item.tipo_precio})
+      <span>€ ${fmt(subtotal, 2)} <button class="btn btn-sm btn-danger eliminar-carrito" data-index="${idx}"><i class="fas fa-times"></i></button></span>
+    </li>`;
+  });
+  list.innerHTML = html;
+  document.getElementById('carritoTotal').textContent = fmt(total, 2);
+  document.querySelectorAll('.eliminar-carrito').forEach(btn => btn.addEventListener('click', () => {
+    carrito.splice(parseInt(btn.dataset.index), 1);
+    renderCarrito();
+  }));
+}
+
+async function finalizarVenta() {
+  if (carrito.length === 0) { alert('Carrito vacío'); return; }
+  const cliente_id = parseInt(document.getElementById('selectCliente').value) || null;
+  const items = carrito.map(item => ({
+    producto_id: item.producto_id,
+    cantidad: item.cantidad,
+    precio_unitario: item.precio_unitario,
+    tipo_precio: item.tipo_precio
+  }));
+  try {
+    await fetchApi('/ventas', { method: 'POST', body: JSON.stringify({ cliente_id, items }) });
+    alert('Venta registrada exitosamente');
+    carrito = [];
+    renderCarrito();
+    if (!document.getElementById('listadoVentasSection').classList.contains('hidden')) {
+      aplicarFiltros();
+    }
+  } catch (e) {
+    alert('Error al registrar venta: ' + e.message);
+  }
+}
+
+// ========== LISTADO DE VENTAS CON FILTROS ==========
+function renderFiltros() {
+  const selProd = document.getElementById('filtroProducto');
+  selProd.innerHTML = '<option value="">Todos</option>';
+  productos.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.nombre;
+    selProd.appendChild(opt);
+  });
+  const selCli = document.getElementById('filtroCliente');
+  selCli.innerHTML = '<option value="">Todos</option>';
+  clientes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.nombre;
+    selCli.appendChild(opt);
+  });
+}
+
+async function aplicarFiltros() {
+  const producto_id = document.getElementById('filtroProducto').value;
+  const cliente_id = document.getElementById('filtroCliente').value;
+  const fecha_desde = document.getElementById('filtroFechaDesde').value;
+  const fecha_hasta = document.getElementById('filtroFechaHasta').value;
+  let url = '/ventas?';
+  const params = [];
+  if (producto_id) params.push(`producto_id=${producto_id}`);
+  if (cliente_id) params.push(`cliente_id=${cliente_id}`);
+  if (fecha_desde) params.push(`fecha_desde=${fecha_desde}`);
+  if (fecha_hasta) params.push(`fecha_hasta=${fecha_hasta}`);
+  url += params.join('&');
+  try {
+    const data = await fetchApi(url);
+    renderTablaVentas(data);
+  } catch (e) {
+    alert('Error al cargar ventas: ' + e.message);
+  }
+}
+
+function renderTablaVentas(ventas) {
+  const tbody = document.getElementById('tablaVentas');
+  if (ventas.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay ventas</td></tr>';
+    return;
+  }
+  let html = '';
+  ventas.forEach(v => {
+    const detalles = v.detalles ? v.detalles.map(d => `${d.cantidad}x ${d.producto_id} (${d.tipo_precio})`).join(', ') : '';
+    html += `<tr>
+      <td>${v.id}</td>
+      <td>${new Date(v.fecha).toLocaleString()}</td>
+      <td>${v.cliente_nombre || 'Sin cliente'}</td>
+      <td>€ ${fmt(v.total, 2)}</td>
+      <td><small>${detalles}</small></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+// ========== EVENTOS DE MODALES ==========
+document.getElementById('btnLogin').addEventListener('click', login);
+document.getElementById('btnRegister').addEventListener('click', register);
+document.getElementById('goToRegister').addEventListener('click', () => {
+  document.getElementById('loginForm').classList.add('hidden');
+  document.getElementById('registerForm').classList.remove('hidden');
+});
+document.getElementById('goToLogin').addEventListener('click', () => {
+  document.getElementById('loginForm').classList.remove('hidden');
+  document.getElementById('registerForm').classList.add('hidden');
+});
+document.getElementById('btnLogout').addEventListener('click', logout);
+
+// Navegación
+document.querySelectorAll('#navLinks .nav-link[data-section]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const section = link.dataset.section;
+    mostrarSeccion(section);
+    if (section === 'listado-ventas') aplicarFiltros();
+    if (section === 'ventas') { renderSelectClientes(); renderSelectProductosVenta(); renderCarrito(); }
+    if (section === 'recetas') { renderListaProductosReceta(); }
+    if (section === 'insumos') renderInsumos();
+    if (section === 'clientes') renderClientes();
+    if (section === 'productos') renderProductos();
+  });
+});
+
+// Productos
+document.getElementById('btnAgregarProducto').addEventListener('click', () => {
+  document.getElementById('editProductoId').value = '';
+  document.getElementById('prodNombre').value = '';
+  document.getElementById('prodPrecioUnitario').value = '';
+  document.getElementById('prodPrecioDocena').value = '';
+  document.getElementById('prodCosto').value = '';
+  document.getElementById('prodPesaje').value = '';
+  document.getElementById('prodCantidadProducida').value = 1;
+  document.getElementById('prodInstrucciones').value = '';
+  document.getElementById('prodUnidadMedida').value = 5; // "Unidad" por defecto
+  document.getElementById('recetaContainer').innerHTML = '<p class="text-muted">Sin insumos</p>';
+  document.getElementById('costoRecetaTotal').textContent = '0.00';
+  document.getElementById('costoRecetaEstimado').textContent = '0.00';
+  document.getElementById('modalProductoTitle').textContent = 'Nuevo Producto';
+  new bootstrap.Modal(document.getElementById('productoModal')).show();
+});
+document.getElementById('btnGuardarProducto').addEventListener('click', guardarProducto);
+
+// Insumos
+document.getElementById('btnAgregarInsumo').addEventListener('click', () => {
+  document.getElementById('editInsumoId').value = '';
+  document.getElementById('insNombre').value = '';
+  document.getElementById('insPrecioCompra').value = '';
+  document.getElementById('insPeso').value = '';
+  new bootstrap.Modal(document.getElementById('insumoModal')).show();
+});
+document.getElementById('btnGuardarInsumo').addEventListener('click', guardarInsumo);
+
+// Clientes
+document.getElementById('btnAgregarCliente').addEventListener('click', () => {
+  document.getElementById('editClienteId').value = '';
+  document.getElementById('cliNombre').value = '';
+  document.getElementById('cliEmail').value = '';
+  document.getElementById('cliTelefono').value = '';
+  document.getElementById('cliDireccion').value = '';
+  new bootstrap.Modal(document.getElementById('clienteModal')).show();
+});
+document.getElementById('btnGuardarCliente').addEventListener('click', guardarCliente);
+
+// Ventas
+document.getElementById('btnAgregarCarrito').addEventListener('click', agregarAlCarrito);
+document.getElementById('btnFinalizarVenta').addEventListener('click', finalizarVenta);
+document.getElementById('btnVaciarCarrito').addEventListener('click', () => { carrito = []; renderCarrito(); });
+
+// Filtros
+document.getElementById('btnFiltrarVentas').addEventListener('click', aplicarFiltros);
+document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+  document.getElementById('filtroProducto').value = '';
+  document.getElementById('filtroCliente').value = '';
+  document.getElementById('filtroFechaDesde').value = '';
+  document.getElementById('filtroFechaHasta').value = '';
+  aplicarFiltros();
+});
+
+// Agregar insumo a receta desde producto
+document.getElementById('btnAgregarInsumoReceta').addEventListener('click', () => {
+  const productoId = parseInt(document.getElementById('editProductoId').value);
+  if (!productoId) { alert('Primero guarda el producto'); return; }
+  document.getElementById('recetaProductoId').value = productoId;
+  const select = document.getElementById('recetaInsumoSelect');
+  select.innerHTML = '';
+  insumos.forEach(ins => {
+    const opt = document.createElement('option');
+    opt.value = ins.id;
+    opt.textContent = ins.nombre + ' (€' + fmt(ins.precio_por_gramo, 6) + '/gr)';
+    select.appendChild(opt);
+  });
+  document.getElementById('recetaCantidad').value = '';
+  new bootstrap.Modal(document.getElementById('recetaInsumoModal')).show();
+});
+
+document.getElementById('btnGuardarRecetaInsumo').addEventListener('click', async () => {
+  const producto_id = parseInt(document.getElementById('recetaProductoId').value);
+  const insumo_id = parseInt(document.getElementById('recetaInsumoSelect').value);
+  const cantidad = parseFloat(document.getElementById('recetaCantidad').value);
+  if (!insumo_id || !cantidad || cantidad <= 0) { alert('Selecciona insumo y cantidad válida'); return; }
+  try {
+    await fetchApi('/recetas', { method: 'POST', body: JSON.stringify({ producto_id, insumo_id, cantidad }) });
+    bootstrap.Modal.getInstance(document.getElementById('recetaInsumoModal')).hide();
+    cargarRecetasProducto(producto_id);
+  } catch (e) {
+    alert('Error al agregar insumo: ' + e.message);
+  }
+});
+
+// Nuevo insumo desde el modal de receta
+document.getElementById('recetaNuevoInsumoLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  const nombre = prompt('Nombre del nuevo insumo:');
+  if (!nombre) return;
+  const precio = prompt('Precio de compra (€):');
+  if (precio === null) return;
+  const peso = prompt('Peso en gramos:');
+  if (peso === null) return;
+  fetchApi('/insumos', { method: 'POST', body: JSON.stringify({ nombre, precio_compra: parseFloat(precio), peso_compra: parseFloat(peso) }) })
+    .then(() => {
+      alert('Insumo creado. Actualizando lista...');
+      return cargarDatosIniciales();
+    })
+    .catch(e => alert('Error: ' + e.message));
+});
+
+function renderUnidades() {
+  const tbody = document.getElementById('tablaUnidades');
+  if (unidades.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay unidades registradas.</td></tr>';
+    return;
+  }
+  let html = '';
+  unidades.forEach(u => {
+    html += `<tr>
+      <td>${u.id}</td>
+      <td>${u.nombre}</td>
+      <td>${u.abreviatura}</td>
+      <td>${u.conversion_gramos || 'N/A'}</td>
+      <td>${u.conversion_ml || 'N/A'}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary editar-unidad" data-id="${u.id}"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-sm btn-outline-danger eliminar-unidad" data-id="${u.id}"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+  document.querySelectorAll('.editar-unidad').forEach(btn => btn.addEventListener('click', () => abrirEditarUnidad(parseInt(btn.dataset.id))));
+  document.querySelectorAll('.eliminar-unidad').forEach(btn => btn.addEventListener('click', async () => {
+    if (confirm('¿Eliminar esta unidad?')) {
+      await fetchApi(`/unidades/${btn.dataset.id}`, { method: 'DELETE' });
+      await cargarDatosIniciales();  // recarga todo, incluyendo unidades
+    }
+  }));
+}
+
+function abrirEditarUnidad(id) {
+  const u = unidades.find(uni => uni.id === id);
+  if (!u) return;
+  document.getElementById('editUnidadId').value = id;
+  document.getElementById('uniNombre').value = u.nombre;
+  document.getElementById('uniAbreviatura').value = u.abreviatura;
+  document.getElementById('uniConversionGr').value = u.conversion_gramos || '';
+  document.getElementById('uniConversionMl').value = u.conversion_ml || '';
+  document.getElementById('modalUnidadTitle').textContent = 'Editar Unidad';
+  new bootstrap.Modal(document.getElementById('unidadModal')).show();
+}
+
+async function guardarUnidad() {
+  const id = document.getElementById('editUnidadId').value;
+  const nombre = document.getElementById('uniNombre').value.trim();
+  const abreviatura = document.getElementById('uniAbreviatura').value.trim();
+  const conversion_gramos = parseFloat(document.getElementById('uniConversionGr').value) || null;
+  const conversion_ml = parseFloat(document.getElementById('uniConversionMl').value) || null;
+
+  if (!nombre || !abreviatura) {
+    alert('Nombre y abreviatura son obligatorios.');
+    return;
+  }
+
+  const body = { nombre, abreviatura, conversion_gramos, conversion_ml };
+  try {
+    if (id) {
+      await fetchApi(`/unidades/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    } else {
+      await fetchApi('/unidades', { method: 'POST', body: JSON.stringify(body) });
+    }
+    bootstrap.Modal.getInstance(document.getElementById('unidadModal')).hide();
+    await cargarDatosIniciales(); // recarga todo y actualiza selectores
+  } catch (e) {
+    alert('Error al guardar unidad: ' + e.message);
+  }
+}
+document.getElementById('btnAgregarUnidad').addEventListener('click', () => {
+  document.getElementById('editUnidadId').value = '';
+  document.getElementById('uniNombre').value = '';
+  document.getElementById('uniAbreviatura').value = '';
+  document.getElementById('uniConversionGr').value = '';
+  document.getElementById('uniConversionMl').value = '';
+  document.getElementById('modalUnidadTitle').textContent = 'Nueva Unidad';
+  new bootstrap.Modal(document.getElementById('unidadModal')).show();
+});
+
+document.getElementById('btnGuardarUnidad').addEventListener('click', guardarUnidad);
+
+// ========== INICIO ==========
+mostrarPanel(false);
+document.getElementById('loginForm').classList.remove('hidden');
+document.getElementById('registerForm').classList.add('hidden');
+</script>
+</body>
+</html>
